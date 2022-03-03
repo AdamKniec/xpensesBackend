@@ -4,12 +4,26 @@ const MongoClient = require("mongodb").MongoClient;
 const express = require("express");
 const dotenv = require("dotenv");
 const expensesRoutes = require("./routes");
+const RequestType = require("express");
+const ResponseType = require("express");
 
 dotenv.config();
 
 const app = express();
 const port = 5001;
 const pass = process.env.MONGO_USER_PASSWORD;
+
+app.use(express.json());
+
+app.use((req: typeof RequestType, res: typeof ResponseType, next: any) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+  next();
+});
 
 app.use("/", expensesRoutes);
 
